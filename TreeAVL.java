@@ -18,10 +18,12 @@ public class TreeAVL<Key extends Comparable<Key>, Value> {
 		return n.getHeight();
 	}
 
+	// Get smallest descendant
 	public Value getMin() {
 		return this.root.getMin();
 	}
 
+	// Get largest descendant
 	public Value getMax() {
 		return this.root.getMax();
 	}
@@ -55,7 +57,9 @@ public class TreeAVL<Key extends Comparable<Key>, Value> {
 			}
 
 			NodeAVL<Key, Value> parentNode = currentNode;
+
 			boolean goLeft = k.compareTo(currentNode.getKey()) < 0;
+
 			currentNode = goLeft ? currentNode.getLeftNode() : currentNode.getRightNode();
 
 			if (currentNode == null) {
@@ -72,16 +76,39 @@ public class TreeAVL<Key extends Comparable<Key>, Value> {
 		}
 	}
 
+	public void delete(Key k) {
+		if (root == null)
+			return;
+
+		NodeAVL<Key, Value> child = this.root;
+
+		while (child != null) {
+			NodeAVL<Key, Value> node = child;
+
+			if (node.hasSameKey(k)) {
+				delete(node);
+				return;
+			}
+
+			boolean cmpValue = k.compareTo(node.getKey()) >= 0;
+
+			child = cmpValue ? node.getRightNode() : node.getLeftNode();
+
+		}
+	}
+
 	private void delete(NodeAVL<Key, Value> n) {
 		if (n.getLeftNode() == null && n.getRightNode() == null) {
 			if (n.getParentNode() == null) {
 				this.root = null;
 			}
+
 			else {
 				NodeAVL<Key, Value> parentNode = n.getParentNode();
 				if (parentNode.getLeftNode() == n) {
 					parentNode.changeLeftNode(null);
 				}
+
 				else {
 					parentNode.changeRightNode(null);
 				}
@@ -91,34 +118,23 @@ public class TreeAVL<Key extends Comparable<Key>, Value> {
 		}
 
 		if (n.getLeftNode() != null) {
-			NodeAVL<Key, Value> child = n.getLeftNode();
-			while (child.getRightNode() != null)
-				child = child.getRightNode();
-			n.hasSameKey(child.getKey());
+			NodeAVL<Key, Value> child = n.getRightNode();
+
+			while (child.getLeftNode() != null) {
+				child = child.getLeftNode();
+			}
+
+			n.setValue(child.getValue());
 			delete(child);
 		}
 		else {
 			NodeAVL<Key, Value> child = n.getRightNode();
-			while (child.getLeftNode() != null)
+			while (child.getLeftNode() != null) {
 				child = child.getLeftNode();
-			n.hasSameKey(child.getKey());
-			delete(child);
-		}
-	}
-
-	public void delete(Key k) {
-		if (root == null)
-			return;
-
-		NodeAVL<Key, Value> child = this.root;
-		while (child != null) {
-			NodeAVL<Key, Value> node = child;
-			boolean cmpValue = k.compareTo(node.getKey()) >= 0;
-			child = cmpValue ? node.getRightNode() : node.getLeftNode();
-			if (node.hasSameKey(k)) {
-				delete(node);
-				return;
 			}
+
+			n.setValue(child.getValue());
+			delete(child);
 		}
 	}
 
@@ -335,9 +351,11 @@ public class TreeAVL<Key extends Comparable<Key>, Value> {
 	}
 
 	private void printBalance(NodeAVL<Key, Value> n) {
+		ArrayList<Value> mahList = this.inorderTraversal();
+
 		if (n != null) {
 			printBalance(n.getLeftNode());
-			System.out.printf("%s ", n.getBalanceFactor());
+			System.out.printf("%s  ", n.getBalanceFactor());
 			printBalance(n.getRightNode());
 		}
 	}

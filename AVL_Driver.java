@@ -21,7 +21,7 @@ public class AVL_Driver {
 			System.out.println("Inserting values 10 to 20");
 			for (int i = 1, j = 10; i <= 20; i++, j++) {
 				System.out.println("Inserting " + j + " into the AVL Tree");
-				tree.insert(i, j);
+				tree.insert(j, j);
 
 				tree.printTree2(treeWriter);
 				treeWriter.flush();
@@ -34,6 +34,21 @@ public class AVL_Driver {
 				System.out.println();
 				System.out.println();
 			}
+			
+			System.out.println();
+			System.out.println("Deleting key/element 13: ");
+			tree.delete(13);
+			
+			tree.printTree2(treeWriter);
+			treeWriter.flush();
+			
+			while ((content = in.read()) != -1) {
+				System.out.print((char) content);
+			}
+			
+			System.out.println();
+			System.out.println();
+			
 			treeWriter.close();
 			in.close();
 		}
@@ -44,10 +59,14 @@ public class AVL_Driver {
 		}
 
 		ArrayList<Integer> mahList = tree.inorderTraversal();
+		String listAsString = ""; // Array list to string
 
-		System.out.println(Arrays.toString(mahList.toArray()));
-
-		System.out.print("Printing balance: ");
+		for (Integer e : mahList) { // For every element in resultList, put into e and add it to the string
+			listAsString += e + " ";
+		}
+		System.out.println("Printing balance (Inorder Traversal): ");
+		System.out.println(listAsString);
 		tree.printBalance();
+		
 	}
 }
